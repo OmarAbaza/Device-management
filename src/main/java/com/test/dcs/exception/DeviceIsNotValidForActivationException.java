@@ -6,15 +6,15 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class DeviceDataMissingException extends Exception {
+public class DeviceIsNotValidForActivationException extends Exception {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6299748856644201967L;
-	private List<String> errors;
+	private final List<String> errors;
 
-	public DeviceDataMissingException(List<String> errors) {
+	public DeviceIsNotValidForActivationException(List<String> errors) {
 		this.errors = errors;
 	}
 }

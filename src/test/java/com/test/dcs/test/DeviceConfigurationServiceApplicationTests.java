@@ -1,10 +1,10 @@
-package com.test.warehouse;
+package com.test.dcs.test;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class WarehouseInventoryApplicationTests {
+class DeviceConfigurationServiceApplicationTests {
 
 	@Test
 	void contextLoads() {

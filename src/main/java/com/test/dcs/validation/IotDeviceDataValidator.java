@@ -24,7 +24,7 @@ public class IotDeviceDataValidator {
 
 			if (subject.getSerialNumber() == null) {
 				validationErrors.add("Device serial number is missing");
-			} else if (!subject.getSerialNumber().matches("([0-9])*")) {
+			} else if (!subject.getSerialNumber().matches("(\\d)*")) {
 				validationErrors.add("Device serial number should contain digits only");
 			}
 

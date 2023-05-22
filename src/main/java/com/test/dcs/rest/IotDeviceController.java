@@ -15,8 +15,7 @@ import org.springframework.web.client.HttpClientErrorException.NotFound;
 import com.test.dcs.dto.ActivateDeviceDto;
 import com.test.dcs.dto.ResponseDto;
 import com.test.dcs.dto.ResponseStatusMessages;
-import com.test.dcs.exception.DeviceAlreadyActiveException;
-import com.test.dcs.exception.DeviceDataMissingException;
+import com.test.dcs.exception.DeviceIsNotValidForActivationException;
 import com.test.dcs.service.IotDeviceActivationService;
 
 @RestController
@@ -27,25 +26,25 @@ public class IotDeviceController {
 	private IotDeviceActivationService deviceActivationService;
 
 	@PostMapping("/activate")
-	public ResponseEntity<ResponseDto> activateDevice(@RequestBody ActivateDeviceDto activateDeviceDto)
-			throws DeviceDataMissingException, DeviceAlreadyActiveException {
+	public ResponseEntity<ResponseDto> activateDevice(@RequestBody ActivateDeviceDto activateDeviceDto) throws DeviceIsNotValidForActivationException
+			  {
 		ResponseDto responseDto = deviceActivationService.activateIotDevice(activateDeviceDto.getSerialNumber());
-		return new ResponseEntity<ResponseDto>(
+		return new ResponseEntity<>(
 				new ResponseDto(true, ResponseStatusMessages.DEVICE_ACTIVATED_SUCCESSFULLY, responseDto), HttpStatus.OK);
 	}
 	
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	@ExceptionHandler(NotFound.class)
 	public ResponseEntity<ResponseDto> handleDeviceNotFoundExceptions(NotFound ex) {
-		return new ResponseEntity<ResponseDto>(
+		return new ResponseEntity<>(
 				new ResponseDto(false, ResponseStatusMessages.DEVICE_NOT_FOUND, ex.getResponseBodyAsString()),
 				HttpStatus.NOT_FOUND);
 	}
 	
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(DeviceDataMissingException.class)
-	public ResponseEntity<ResponseDto> handleDataValidationExceptions(DeviceDataMissingException ex) {
-		return new ResponseEntity<ResponseDto>(
+	@ExceptionHandler(DeviceIsNotValidForActivationException.class)
+	public ResponseEntity<ResponseDto> handleDataValidationExceptions(DeviceIsNotValidForActivationException ex) {
+		return new ResponseEntity<>(
 				new ResponseDto(false, ResponseStatusMessages.DATA_VALIDATION_FAILED, ex.getErrors()),
 				HttpStatus.BAD_REQUEST);
 	}
@@ -53,7 +52,7 @@ public class IotDeviceController {
 	@ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<ResponseDto> handleInvalidFormatExceptions(HttpMessageNotReadableException ex) {
-		return new ResponseEntity<ResponseDto>(new ResponseDto(false, ResponseStatusMessages.INVALID_DATA, ex.getRootCause()),
+		return new ResponseEntity<>(new ResponseDto(false, ResponseStatusMessages.INVALID_DATA, ex.getRootCause()),
 				HttpStatus.NOT_ACCEPTABLE);
 	}
 	
@@ -61,7 +60,7 @@ public class IotDeviceController {
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ResponseDto> handleTechnicalExceptions(Exception ex) {
 		ex.printStackTrace();
-		return new ResponseEntity<ResponseDto>(new ResponseDto(false, ResponseStatusMessages.TECHNICAL_FAILURE, null),
+		return new ResponseEntity<>(new ResponseDto(false, ResponseStatusMessages.TECHNICAL_FAILURE, null),
 				HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
